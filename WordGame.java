@@ -20,10 +20,12 @@ public class WordGame{
     int arraySize3=7;
     int arraySize4=3;
     int arraySize5=5;
+    boolean playagain=true;
 
 //put correct letters in arraylist to see whether has got all letters correct in a word
 //the arraylist size depends on the number of letters in a word
 //arraylist for hello
+while (playagain=true){
     ArrayList<String> LetterArray1 = new ArrayList<String>(arraySize1);
 //arraylist for food
     ArrayList<String> LetterArray2 = new ArrayList<String>(arraySize2);
@@ -42,6 +44,7 @@ public class WordGame{
 
     //word1 case
     //ask player1 to input letter to guess the word
+    //users will keep guessing the same word until they get it right, then can start guessing the next word in game
     while (letterGuessed1<arraySize1){
     System.out.println("player1 enter letter to guess word1");
     String letter1=input.nextLine();
@@ -49,7 +52,8 @@ public class WordGame{
     {
       player1Score=player1Score+1;
       LetterArray1.add(letter1);
-      letterGuessed=letterGuessed+1;
+      letterGuessed1=letterGuessed1+1;
+      System.out.println(letterGuessed1);
     }//end if
 
     //ask player2 to input letter to guess the word
@@ -60,7 +64,7 @@ public class WordGame{
     {
       player2Score=player2Score+1;
       LetterArray1.add(letter2);
-      letterGuessed=letterGuessed+1;
+      letterGuessed1=letterGuessed1+1;
     }//end if
   }//end while
 
@@ -68,22 +72,22 @@ public class WordGame{
   //word2 case
   while (letterGuessed2<arraySize2){
   System.out.println("player1 enter letter to guess word2");
-  letter1=input.nextLine();
-  if (correctWord2.contains(letter1))
+  String letter3=input.nextLine();
+  if (correctWord2.contains(letter3))
   {
     player1Score=player1Score+1;
-    LetterArray2.add(letter1);
+    LetterArray2.add(letter3);
     letterGuessed2=letterGuessed2+1;
   }//end if
 
   //ask player2 to input letter to guess the word
   //player one and player two take turns to guess the same word together
   System.out.println("player2 enter letter to guess word2");
-  letter2=input.nextLine();
-  if(correctWord2.contains(letter2))
+  String letter4=input.nextLine();
+  if(correctWord2.contains(letter4))
   {
     player2Score=player2Score+1;
-    LetterArray2.add(letter2);
+    LetterArray2.add(letter4);
     letterGuessed2=letterGuessed2+1;
   }//end if
 }//end while
@@ -92,22 +96,22 @@ public class WordGame{
   //word3 case
   while (letterGuessed3<arraySize3){
   System.out.println("player1 enter letter to guess word3");
-  letter1=input.nextLine();
-  if (correctWord3.contains(letter1))
+  String letter5=input.nextLine();
+  if (correctWord3.contains(letter5))
   {
     player1Score=player1Score+1;
-    LetterArray3.add(letter1);
+    LetterArray3.add(letter5);
     letterGuessed3=letterGuessed3+1;
   }//end if
 
   //ask player2 to input letter to guess the word
   //player one and player two take turns to guess the same word together
   System.out.println("player2 enter letter to guess word3");
-  letter2=input.nextLine();
-  if(correctWord3.contains(letter2))
+  String letter6=input.nextLine();
+  if(correctWord3.contains(letter6))
   {
     player2Score=player2Score+1;
-    LetterArray3.add(letter2);
+    LetterArray3.add(letter6);
     letterGuessed3=letterGuessed3+1;
   }//end if
 }//end while
@@ -116,22 +120,22 @@ System.out.println("proceed to the fourth word");
 //word4 case
 while (letterGuessed4<arraySize4){
 System.out.println("player1 enter letter to guess word4");
-letter1=input.nextLine();
-if (correctWord4.contains(letter1))
+String letter7=input.nextLine();
+if (correctWord4.contains(letter7))
 {
   player1Score=player1Score+1;
-  LetterArray4.add(letter1);
+  LetterArray4.add(letter7);
   letterGuessed4=letterGuessed4+1;
 }//end if
 
 //ask player2 to input letter to guess the word
 //player one and player two take turns to guess the same word together
 System.out.println("player2 enter letter to guess word4");
-letter2=input.nextLine();
-if(correctWord4.contains(letter2))
+String letter8=input.nextLine();
+if(correctWord4.contains(letter8))
 {
   player2Score=player2Score+1;
-  LetterArray4.add(letter2);
+  LetterArray4.add(letter8);
   letterGuessed4=letterGuessed4+1;
 }//end if
 }//end while
@@ -140,22 +144,22 @@ System.out.println("proceed to the fifth word");
 //word5 case
 while (letterGuessed5<arraySize5){
 System.out.println("player1 enter letter to guess word5");
-letter1=input.nextLine();
-if (correctWord5.contains(letter1))
+String letter9=input.nextLine();
+if (correctWord5.contains(letter9))
 {
   player1Score=player1Score+1;
-  LetterArray5.add(letter1);
+  LetterArray5.add(letter9);
   letterGuessed5=letterGuessed5+1;
 }//end if
 
 //ask player2 to input letter to guess the word
 //player one and player two take turns to guess the same word together
 System.out.println("player2 enter letter to guess word5");
-letter2=input.nextLine();
-if(correctWord5.contains(letter2))
+String letter10=input.nextLine();
+if(correctWord5.contains(letter10))
 {
   player2Score=player2Score+1;
-  LetterArray5.add(letter2);
+  LetterArray5.add(letter10);
   letterGuessed5=letterGuessed5+1;
 }//end if
 }//end while
@@ -173,7 +177,17 @@ else{
   System.out.println("draw");
 }
 
+System.out.println("would you like to play again? enter 'yes' or 'no'");
+String again=input.nextLine();
+if(again=="yes")
+{
+  playagain=true;
+}else{
+  playagain=false;
+}//end else
+}//end boolean while
 
-  }
 
-}
+}//end static
+
+}// end class
