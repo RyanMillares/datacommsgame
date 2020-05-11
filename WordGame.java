@@ -165,6 +165,9 @@ if(correctWord5.contains(letter10))
 }//end while
 
 //compare scores of two players
+System.out.println("Player 1:" + player1Score + "\n");
+System.out.println("Player 2:" + player2Score + "\n");
+
 if(player1Score>player2Score)
 {
   System.out.println("player1 wins");
