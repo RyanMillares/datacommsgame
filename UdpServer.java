@@ -22,15 +22,20 @@ class UdpServer {
     String name2="";
     int score1;
     int score2;
+    boolean game = true;
     int port1 = 0;
     int port2 = 0;
     int state = 0;
     int num = 1;
+    String reply1 = "";
+    String reply2 = "";
+
 
     String ind;
     String useless = "general kenobi";
     //prepare the words
-    String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
+  //  String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
+    String[] words = {"hi", "no"};
     String[] letters;
     boolean[][] checker = new boolean[words.length][];
     String[][] letterList = new String[words.length][];
@@ -61,7 +66,7 @@ class UdpServer {
 
 
 
-    while (true) {
+    while (game) {
       switch(state){
         case 0:  //clients are connecting
           if(num == 1){
@@ -202,24 +207,38 @@ class UdpServer {
               guess = sentence.substring(0,1);
               for(int j = 0; j < letterList[i].length; ++j){
                 if(guess.equals(letterList[i][j])){
+                  if(checker[i][j]){
+                    addScore = -1;
+                    break;
+                  }
                   addScore += 10;
                   checker[i][j] = true;
+
                 }
               }
               if(receivePacket.getPort() == port1){
-                score1 += addScore;
+                if(addScore >= 0){
+                  score1 += addScore;
+
+                }
                 good = "     "+name1 + " guessed: " +guess+ "...";
               }
               else{
-                score2 += addScore;
+                if(addScore >= 0){
+                  score2 += addScore;
+
+                }
                 good = "     "+name2 + " guessed: " +guess+ "...";
 
               }
               if(addScore > 0){
                 good += "\nCORRECT!\n";
               }
-              else{
+              else if(addScore == 0){
                 good += "\nSadly, "+guess+" is not in the word...\n";
+              }
+              else{
+                good += guess + " has already been guessed!\n";
               }
               scores = "\n\n" + name1 + ": " + score1 + "\n" + name2 + ": " + score2 + "\n";
               for(int j = 0; j < letterList[i].length; ++j){
@@ -241,11 +260,11 @@ class UdpServer {
               }
               else{
                 if(receivePacket.getPort() == port1){
-                  display = "Yey!" + name1 + "finished the word! It was: " + words[i];
+                  display = "Yey!  " + name1 + "finished the word! It was: " + words[i];
 
                 }
                 else{
-                  display = "Yey!" + name2 + "finished the word! It was: " + words[i];
+                  display = "Yey!  " + name2 + "finished the word! It was: " + words[i];
 
 
                 }
@@ -267,6 +286,87 @@ class UdpServer {
 
             }
           }
+          String finale = "It would seem you have reached the end...\n";
+          finale += "Your scores are as follows...\n";
+          finale += name1 + ": " + score1 + "\n";
+          finale += name2 + ": " + score2 + "\n";
+          sendData = finale.getBytes();
+          sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+          serverSocket.send(sendPacket);
+          sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+          serverSocket.send(sendPacket);
+          Arrays.fill(sendData, (byte) 0 );
+          Arrays.fill(receiveData, (byte) 0 );
+          if(score1 > score2){
+            useless = "1";
+          }
+          else if(score1 < score2){
+            useless = "2";
+          }
+          else{
+            useless = "0";
+          }
+          System.out.println("hi");
+          sendData = useless.getBytes();
+          sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+          serverSocket.send(sendPacket);
+          System.out.println("hi");
+
+          sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+          serverSocket.send(sendPacket);
+          System.out.println("hi");
+
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          serverSocket.receive(receivePacket);
+          System.out.println("hi");
+
+          sentence = new String(receivePacket.getData());
+          boolean p1 = (sentence.substring(0,3).toUpperCase().equals("YES"));
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          serverSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          boolean p2 = (sentence.substring(0,3).toUpperCase().equals("YES"));
+          if(p1 && p2){
+            useless = "You both want to play? Then BACK you go!";
+            sendData = useless.getBytes();
+            sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+            serverSocket.send(sendPacket);
+            sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+            serverSocket.send(sendPacket);
+
+          }
+          else{
+            useless = "One or both of you do not wish to play again... Thanks for playing!";
+            sendData = useless.getBytes();
+            sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+            serverSocket.send(sendPacket);
+            sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+            serverSocket.send(sendPacket);
+            game = false;
+          }
+
+
+
+          /**
+          String finale = "It would seem you have reached the end...\n";
+          finale += "Your scores are as follows...\n";
+          finale += name1 + ": " + score1;
+          finale += name2 + ": " + score2;
+          if(score1 > score2){
+            finale += "Congratulations, "+ name1 + ", it would appear you are victorious.";
+
+          }
+          else if(score1 < score2){
+            finale += "Congratulations, "+ name2 + ", it would appear you are victorious.";
+
+          }
+          else{
+            finale += "Curious... it would appear the two of you have tied..."
+          }**/
+
+
+        break;
+        case 2:
         break;
 
 
@@ -275,6 +375,8 @@ class UdpServer {
 
 
     }
+    System.out.println("CLOSING SOCKET...");
+    serverSocket.close();
   }
   public static boolean isDone(boolean[] checks){
     for(int i = 0; i < checks.length; ++i){

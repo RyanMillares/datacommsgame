@@ -17,20 +17,21 @@ class UdpClient {
     DatagramPacket sendPacket = null;
     DatagramPacket receivePacket = null;
     String sentence = "";
-    String username;
+    String username = "";
     InetAddress ipAddress = InetAddress.getByName("localhost");
     String hostIP = ipAddress.getHostAddress();
     String hostName = ipAddress.getHostName();
     String toServer;
     String message;
     int state = 0;
+    boolean game = true;
     int player = 0;
     int priority = 0;
     byte[] sendData = new byte[1024];
     byte[] receiveData = new byte[1024];
 
 
-    while (true) {
+    while (game) {
       switch(state){
         // the START mode
         case 0:
@@ -101,6 +102,10 @@ class UdpClient {
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
           System.out.println(sentence);
+          if(sentence.substring(0,2).toUpperCase().equals("IT")){
+            state = 2;
+            break;
+          }
 
           Arrays.fill(receiveData, (byte) 0 );
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -136,8 +141,15 @@ class UdpClient {
                 if(sentence.substring(0,3).toUpperCase().equals("YEY")){
                   break;
                 }
+                if(player == 1){
+                  System.out.println("\nWaiting for Player 2 to guess...");
 
-                System.out.println("\nWaiting for Player 2 to guess...");
+                }
+                else{
+                  System.out.println("\nWaiting for Player 1 to guess...");
+
+                }
+
                 receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
                 sentence = new String(receivePacket.getData());
@@ -152,7 +164,14 @@ class UdpClient {
             break;
             case 1: //going next... actions switched
               while(true){
-                System.out.println("\nWaiting for Player 1 to guess...");
+                if(player == 1){
+                  System.out.println("\nWaiting for Player 2 to guess...");
+
+                }
+                else{
+                  System.out.println("\nWaiting for Player 1 to guess...");
+
+                }
                 receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
                 sentence = new String(receivePacket.getData());
@@ -183,12 +202,48 @@ class UdpClient {
                 }
               }
 
-
-
-
             break;
           }
 
+
+        break;
+        case 2:
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          clientSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          System.out.println(sentence);
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          clientSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          int finale = Integer.parseInt(sentence.substring(0,1));
+          if(finale == 0){
+            System.out.println("Hmm, curious... It would seem you have both... tied.");
+
+          } else if(finale == player){
+            System.out.println("Congratulations, " +username+ ", you are the victor!");
+
+          } else{
+            System.out.println("Aww... It would appear you have been bested :\'c");
+
+          }
+          System.out.println("Play again? (yes/no)");
+          message = inFromUser.readLine();
+          sendData = message.getBytes();
+          sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
+          clientSocket.send(sendPacket);
+          System.out.println("The other player is thinking...");
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          clientSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          if(!sentence.substring(0,3).toUpperCase().equals("YOU")){
+            game = false;
+          }
+
+
+
+
+
+
         break;
 
 
@@ -196,9 +251,7 @@ class UdpClient {
       }
 
 
-      if (sentence.toUpperCase().equals("GOODBYE")) {
-        break;
-      }
+
       //sentence = inFromUser.readLine();
 
     }
