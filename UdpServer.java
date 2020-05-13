@@ -141,6 +141,10 @@ class UdpServer {
 
 
           for(int i = 0; i < letterList.length; ++i){
+            display = "";
+            scores = "";
+            useless = "";
+            currentWord = "";
             Arrays.fill(sendData, (byte) 0 );
             Arrays.fill(receiveData, (byte) 0 );
 
@@ -163,21 +167,21 @@ class UdpServer {
             serverSocket.send(sendPacket);
             if(i%2 == 0){
               useless = "0";
-              sendData = display.getBytes();
+              sendData = useless.getBytes();
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
               serverSocket.send(sendPacket);
               useless = "1";
-              sendData = display.getBytes();
+              sendData = useless.getBytes();
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
               serverSocket.send(sendPacket);
             }
             else{
               useless = "1";
-              sendData = display.getBytes();
+              sendData = useless.getBytes();
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
               serverSocket.send(sendPacket);
               useless = "0";
-              sendData = display.getBytes();
+              sendData = useless.getBytes();
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
               serverSocket.send(sendPacket);
             }
@@ -186,6 +190,7 @@ class UdpServer {
 
 
             while(true){
+              String good = "";
               int addScore = 0;
               String guess;
               display = "";
@@ -203,9 +208,18 @@ class UdpServer {
               }
               if(receivePacket.getPort() == port1){
                 score1 += addScore;
+                good = "     "+name1 + " guessed: " +guess+ "...";
               }
               else{
                 score2 += addScore;
+                good = "     "+name2 + " guessed: " +guess+ "...";
+
+              }
+              if(addScore > 0){
+                good += "\nCORRECT!\n";
+              }
+              else{
+                good += "\nSadly, "+guess+" is not in the word...\n";
               }
               scores = "\n\n" + name1 + ": " + score1 + "\n" + name2 + ": " + score2 + "\n";
               for(int j = 0; j < letterList[i].length; ++j){
@@ -217,7 +231,36 @@ class UdpServer {
                 }
                 currentWord = currentWord + " ";
               }
-              display = scores + "\nCurrent Word: " + currentWord;
+              display = scores + "\nCurrent Word: " + currentWord + good;
+              if(!isDone(checker[i])){
+                sendData = display.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+                serverSocket.send(sendPacket);
+                sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+                serverSocket.send(sendPacket);
+              }
+              else{
+                if(receivePacket.getPort() == port1){
+                  display = "Yey!" + name1 + "finished the word! It was: " + words[i];
+
+                }
+                else{
+                  display = "Yey!" + name2 + "finished the word! It was: " + words[i];
+
+
+                }
+                System.out.println("Next word!");
+                display += "\nNext word!";
+                sendData = display.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+                serverSocket.send(sendPacket);
+                sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+                serverSocket.send(sendPacket);
+                break;
+
+              }
+
+
 
 
 
@@ -233,7 +276,12 @@ class UdpServer {
 
     }
   }
-  public static void PrepGame(){
-
+  public static boolean isDone(boolean[] checks){
+    for(int i = 0; i < checks.length; ++i){
+      if(!checks[i]){
+        return false;
+      }
+    }
+    return true;
   }
 }

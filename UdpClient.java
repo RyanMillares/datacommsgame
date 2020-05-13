@@ -87,10 +87,13 @@ class UdpClient {
             System.out.println("Found game with: "+message+"! Let the games begin!");
             state = 1;
 
+
           }
-          System.out.println(player);
+          System.out.println(state);
         break;
         case 1: // GAMEPLAY
+
+
 
           Arrays.fill(sendData, (byte) 0 );
           Arrays.fill(receiveData, (byte) 0 );
@@ -104,28 +107,83 @@ class UdpClient {
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
           message = sentence.substring(0,1);
+          System.out.println(message);
           priority = Integer.parseInt(message);
 
 
           switch(priority){
             case 0:
               while(true){
-                System.out.print("Make your letter guess: ");
-                message = inFromUser.readLine();
-                if(message.length() > 1){
-                  System.out.println("Must only be 1 character!");
+                Arrays.fill(sendData, (byte) 0 );
+                Arrays.fill(receiveData, (byte) 0 );
+                while(true){
+                  System.out.print("Make your letter guess: ");
+                  message = inFromUser.readLine();
+                  if(message.length() > 1){
+                    System.out.println("Must only be 1 character!");
+                  }
+                  else{
+                    break;
+                  }
                 }
-                else{
+                sendData = message.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
+                clientSocket.send(sendPacket);
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                clientSocket.receive(receivePacket);
+                sentence = new String(receivePacket.getData());
+                System.out.println(sentence);
+                if(sentence.substring(0,3).toUpperCase().equals("YEY")){
+                  break;
+                }
+
+                System.out.println("\nWaiting for Player 2 to guess...");
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                clientSocket.receive(receivePacket);
+                sentence = new String(receivePacket.getData());
+                System.out.println(sentence);
+                if(sentence.substring(0,3).toUpperCase().equals("YEY")){
                   break;
                 }
               }
-              sendData = message.getBytes();
-              sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
-              clientSocket.send(sendPacket);
+
 
 
             break;
-            case 1:
+            case 1: //going next... actions switched
+              while(true){
+                System.out.println("\nWaiting for Player 1 to guess...");
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                clientSocket.receive(receivePacket);
+                sentence = new String(receivePacket.getData());
+                System.out.println(sentence);
+                if(sentence.substring(0,3).toUpperCase().equals("YEY")){
+                  break;
+                }
+
+                while(true){
+                  System.out.print("Make your letter guess: ");
+                  message = inFromUser.readLine();
+                  if(message.length() > 1){
+                    System.out.println("Must only be 1 character!");
+                  }
+                  else{
+                    break;
+                  }
+                }
+                sendData = message.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
+                clientSocket.send(sendPacket);
+                receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                clientSocket.receive(receivePacket);
+                sentence = new String(receivePacket.getData());
+                System.out.println(sentence);
+                if(sentence.substring(0,3).toUpperCase().equals("YEY")){
+                  break;
+                }
+              }
+
+
 
 
             break;
@@ -136,30 +194,7 @@ class UdpClient {
 
 
       }
-      System.out.println("\nType a Sentence");
-      sentence = inFromUser.readLine();
 
-      sendData = sentence.getBytes();
-      sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
-      clientSocket.send(sendPacket);
-
-
-      receivePacket = new DatagramPacket(receiveData, receiveData.length);
-      int test = sendPacket.getPort();
-      System.out.println(test);
-
-
-
-      clientSocket.receive(receivePacket);
-      System.out.println("7");
-
-
-      String modifiedSentence = new String(receivePacket.getData());
-      System.out.println("8");
-
-
-      System.out.println("FROM SERVER:" + modifiedSentence);
-      System.out.println("9");
 
       if (sentence.toUpperCase().equals("GOODBYE")) {
         break;
