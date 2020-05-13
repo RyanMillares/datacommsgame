@@ -34,7 +34,7 @@ class UdpServer {
     String ind;
     String useless = "general kenobi";
     //prepare the words
-  //  String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
+    //String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
     String[] words = {"hi", "no"};
     String[] letters;
     boolean[][] checker = new boolean[words.length][];
@@ -238,7 +238,7 @@ class UdpServer {
                 good += "\nSadly, "+guess+" is not in the word...\n";
               }
               else{
-                good += guess + " has already been guessed!\n";
+                good += "\n" + guess + " has already been guessed!\n";
               }
               scores = "\n\n" + name1 + ": " + score1 + "\n" + name2 + ": " + score2 + "\n";
               for(int j = 0; j < letterList[i].length; ++j){
@@ -306,19 +306,15 @@ class UdpServer {
           else{
             useless = "0";
           }
-          System.out.println("hi");
           sendData = useless.getBytes();
           sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
           serverSocket.send(sendPacket);
-          System.out.println("hi");
 
           sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
           serverSocket.send(sendPacket);
-          System.out.println("hi");
 
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
           serverSocket.receive(receivePacket);
-          System.out.println("hi");
 
           sentence = new String(receivePacket.getData());
           boolean p1 = (sentence.substring(0,3).toUpperCase().equals("YES"));
@@ -333,6 +329,10 @@ class UdpServer {
             serverSocket.send(sendPacket);
             sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
             serverSocket.send(sendPacket);
+
+            for(boolean[] check : checker){
+              Arrays.fill(check, Boolean.FALSE);
+            }
 
           }
           else{
@@ -386,4 +386,5 @@ class UdpServer {
     }
     return true;
   }
+
 }

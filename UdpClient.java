@@ -208,10 +208,18 @@ class UdpClient {
 
         break;
         case 2:
+          System.out.println("the end is here");
+          /**
+          Arrays.fill(receiveData, (byte) 0 );
+
+
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
           System.out.println(sentence);
+          **/
+          Arrays.fill(receiveData, (byte) 0 );
+
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
@@ -238,6 +246,7 @@ class UdpClient {
           if(!sentence.substring(0,3).toUpperCase().equals("YOU")){
             game = false;
           }
+          state = 1;
 
 
 
@@ -255,7 +264,7 @@ class UdpClient {
       //sentence = inFromUser.readLine();
 
     }
-
+    System.out.println("CLOSING SOCKET...");
     clientSocket.close();
   }
 
