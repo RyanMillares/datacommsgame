@@ -4,8 +4,21 @@ import java.net.InetAddress;
 
 class UdpServer {
   public static void main(String[] args) throws Exception {
-    System.out.println("im running");
+    DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, port);
     DatagramSocket serverSocket = null;
+    InetAddress address1 = null;
+    InetAddress address2 = null;
+    String sentence;
+    String name1, name2;
+    int port1 = 0;
+    int port2 = 0;
+    int state = 0;
+
+    String ind;
+
+
+
 
     try {
       serverSocket = new DatagramSocket(8888);
@@ -18,14 +31,25 @@ class UdpServer {
 
 
     while (true) {
-      System.out.println("1");
-      DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-      System.out.println("2");
+      switch(state){
+        case 0:  //first client connects
+          serverSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          port1 = receivePacket.getPort();
+          address1 = receivePacket.getAddress();
+          //get all the info
+          if(sentence.substring(0,5).toUpperCase().equals("HELO")){
+            ind = "1";
+
+          }
+
+
+      }
 
       serverSocket.receive(receivePacket);
       System.out.println("3");
 
-      String sentence = new String(receivePacket.getData());
+      String
       System.out.println("4");
 
 
