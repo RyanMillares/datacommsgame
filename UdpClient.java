@@ -244,8 +244,11 @@ class UdpClient {
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
           if(!sentence.substring(0,3).toUpperCase().equals("YOU")){
+
+
             game = false;
           }
+          System.out.println(sentence);
           state = 1;
 
 

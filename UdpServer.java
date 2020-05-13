@@ -34,6 +34,7 @@ class UdpServer {
     String ind;
     String useless = "general kenobi";
     //prepare the words
+    //String[] words = {"hi", "tulip", "cat"};
     String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
     //String[] words = {"hi", "no"};
     String[] letters;

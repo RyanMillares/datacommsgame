@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 
 
-class UdpClient1 {
+class UdpClient {
   public static void main(String[] args) throws Exception {
 
     BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
@@ -244,8 +244,11 @@ class UdpClient1 {
           clientSocket.receive(receivePacket);
           sentence = new String(receivePacket.getData());
           if(!sentence.substring(0,3).toUpperCase().equals("YOU")){
+
+
             game = false;
           }
+          System.out.println(sentence);
           state = 1;
 
 
