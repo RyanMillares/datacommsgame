@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 
 
-class UdpClient {
+class UdpClient1 {
   public static void main(String[] args) throws Exception {
 
     BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
