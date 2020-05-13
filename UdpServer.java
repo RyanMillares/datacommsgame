@@ -20,6 +20,8 @@ class UdpServer {
     String sentence;
     String name1="";
     String name2="";
+    int score1;
+    int score2;
     int port1 = 0;
     int port2 = 0;
     int state = 0;
@@ -36,8 +38,9 @@ class UdpServer {
     for(String word : words){
       letters = word.split("(?!^)");
       letterList[counter] = letters;
-      boolean[] checks = new boolean[letters.length];
-      Arrays.fill(checks, Boolean.FALSE);
+      boolean[] checkList = new boolean[letters.length];
+      checker[counter] = checkList;
+      Arrays.fill(checkList, Boolean.FALSE);
       counter++;
 
     }
@@ -93,7 +96,7 @@ class UdpServer {
 
             }
             else{
-              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
+              sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
 
             }
             serverSocket.send(sendPacket);
@@ -116,7 +119,7 @@ class UdpServer {
               serverSocket.send(sendPacket);
               sendData = name1.getBytes();
 
-              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
+              sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
 
               serverSocket.send(sendPacket);
 
@@ -133,8 +136,91 @@ class UdpServer {
           }
         break;
         case 1: //the game
+          score1 = 0;
+          score2 = 0;
+
+
           for(int i = 0; i < letterList.length; ++i){
+            Arrays.fill(sendData, (byte) 0 );
+            Arrays.fill(receiveData, (byte) 0 );
+
+            scores = "\n\n" + name1 + ": " + score1 + "\n" + name2 + ": " + score2 + "\n";
+            for(int j = 0; j < letterList[i].length; ++j){
+              if(checker[i][j]){
+                currentWord = currentWord + letterList[i][j];
+              }
+              else{
+                currentWord = currentWord + "_";
+              }
+              currentWord = currentWord + " ";
+            }
+            display = scores + "\nCurrent Word: " + currentWord;
+            System.out.println("The word is: " + words[i]);
+            sendData = display.getBytes();
+            sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+            serverSocket.send(sendPacket);
+            sendPacket = new DatagramPacket(sendData, sendData.length, address2, port2);
+            serverSocket.send(sendPacket);
+            if(i%2 == 0){
+              useless = "0";
+              sendData = display.getBytes();
+              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+              serverSocket.send(sendPacket);
+              useless = "1";
+              sendData = display.getBytes();
+              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
+              serverSocket.send(sendPacket);
+            }
+            else{
+              useless = "1";
+              sendData = display.getBytes();
+              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
+              serverSocket.send(sendPacket);
+              useless = "0";
+              sendData = display.getBytes();
+              sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
+              serverSocket.send(sendPacket);
+            }
+
+
+
+
             while(true){
+              int addScore = 0;
+              String guess;
+              display = "";
+              scores = "";
+              currentWord = "";
+              receivePacket = new DatagramPacket(receiveData, receiveData.length);
+              serverSocket.receive(receivePacket);
+              sentence = new String(receivePacket.getData());
+              guess = sentence.substring(0,1);
+              for(int j = 0; j < letterList[i].length; ++j){
+                if(guess.equals(letterList[i][j])){
+                  addScore += 10;
+                  checker[i][j] = true;
+                }
+              }
+              if(receivePacket.getPort() == port1){
+                score1 += addScore;
+              }
+              else{
+                score2 += addScore;
+              }
+              scores = "\n\n" + name1 + ": " + score1 + "\n" + name2 + ": " + score2 + "\n";
+              for(int j = 0; j < letterList[i].length; ++j){
+                if(checker[i][j]){
+                  currentWord = currentWord + letterList[i][j];
+                }
+                else{
+                  currentWord = currentWord + "_";
+                }
+                currentWord = currentWord + " ";
+              }
+              display = scores + "\nCurrent Word: " + currentWord;
+
+
+
 
             }
           }

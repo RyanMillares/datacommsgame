@@ -25,6 +25,7 @@ class UdpClient {
     String message;
     int state = 0;
     int player = 0;
+    int priority = 0;
     byte[] sendData = new byte[1024];
     byte[] receiveData = new byte[1024];
 
@@ -90,11 +91,42 @@ class UdpClient {
           System.out.println(player);
         break;
         case 1: // GAMEPLAY
-          switch(player){
-            case 1:
+
+          Arrays.fill(sendData, (byte) 0 );
+          Arrays.fill(receiveData, (byte) 0 );
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          clientSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          System.out.println(sentence);
+
+          Arrays.fill(receiveData, (byte) 0 );
+          receivePacket = new DatagramPacket(receiveData, receiveData.length);
+          clientSocket.receive(receivePacket);
+          sentence = new String(receivePacket.getData());
+          message = sentence.substring(0,1);
+          priority = Integer.parseInt(message);
+
+
+          switch(priority){
+            case 0:
+              while(true){
+                System.out.print("Make your letter guess: ");
+                message = inFromUser.readLine();
+                if(message.length() > 1){
+                  System.out.println("Must only be 1 character!");
+                }
+                else{
+                  break;
+                }
+              }
+              sendData = message.getBytes();
+              sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
+              clientSocket.send(sendPacket);
+
 
             break;
-            case 2:
+            case 1:
+
 
             break;
           }
