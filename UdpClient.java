@@ -77,7 +77,8 @@ class UdpClient {
 
 
 
-          } else if(player == 2){
+          }
+          else{
             receivePacket = new DatagramPacket(receiveData, receiveData.length);
             clientSocket.receive(receivePacket);
             sentence = new String(receivePacket.getData());
@@ -86,6 +87,7 @@ class UdpClient {
             state = 1;
 
           }
+          System.out.println(player);
         break;
         case 1: // GAMEPLAY
           switch(player){
@@ -93,7 +95,7 @@ class UdpClient {
 
             break;
             case 2:
-              
+
             break;
           }
 

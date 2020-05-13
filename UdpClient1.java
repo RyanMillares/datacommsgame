@@ -72,13 +72,35 @@ class UdpClient1 {
             sentence = new String(receivePacket.getData());
             message = sentence.substring(0, 8);
             System.out.println(message + " has connected! Let the games begin!");
+            state = 1;
 
 
 
-
-          } else if(player == 2){
 
           }
+          else{
+            receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            clientSocket.receive(receivePacket);
+            sentence = new String(receivePacket.getData());
+            message = sentence.substring(0, 8);
+            System.out.println("Found game with: "+message+"! Let the games begin!");
+            state = 1;
+
+          }
+          System.out.println(player);
+        break;
+        case 1: // GAMEPLAY
+          switch(player){
+            case 1:
+
+            break;
+            case 2:
+
+            break;
+          }
+
+        break;
+
 
 
       }

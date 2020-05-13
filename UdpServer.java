@@ -8,6 +8,10 @@ class UdpServer {
   public static void main(String[] args) throws Exception {
     byte[] receiveData = new byte[1024];
     byte[] sendData  = new byte[1024];
+
+    String display = "";
+    String scores = "";
+    String currentWord = "";
     DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     DatagramPacket sendPacket = null;
     DatagramSocket serverSocket = null;
@@ -23,6 +27,24 @@ class UdpServer {
 
     String ind;
     String useless = "general kenobi";
+    //prepare the words
+    String[] words = {"hello", "food", "amazing", "yummy", "rainbow", "magic"};
+    String[] letters;
+    boolean[][] checker = new boolean[words.length][];
+    String[][] letterList = new String[words.length][];
+    int counter = 0;
+    for(String word : words){
+      letters = word.split("(?!^)");
+      letterList[counter] = letters;
+      boolean[] checks = new boolean[letters.length];
+      Arrays.fill(checks, Boolean.FALSE);
+      counter++;
+
+    }
+    counter = 0;
+
+
+
 
 
 
@@ -89,9 +111,10 @@ class UdpServer {
             else{
               name2 = sentence.substring(0, 8);
               System.out.println("Player "+num+" username: "+name2);
-              sendData = name1.getBytes();
+              sendData = name2.getBytes();
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port1);
               serverSocket.send(sendPacket);
+              sendData = name1.getBytes();
 
               sendPacket = new DatagramPacket(sendData, sendData.length, address1, port2);
 
@@ -110,7 +133,11 @@ class UdpServer {
           }
         break;
         case 1: //the game
+          for(int i = 0; i < letterList.length; ++i){
+            while(true){
 
+            }
+          }
         break;
 
 
@@ -119,5 +146,8 @@ class UdpServer {
 
 
     }
+  }
+  public static void PrepGame(){
+
   }
 }
