@@ -65,7 +65,7 @@ class UdpClient {
           Arrays.fill(receiveData, (byte) 0 );
           sendData = username.getBytes();
           sendPacket = new DatagramPacket(sendData, sendData.length, ipAddress, 8888);
-          clientSocket.send(sendPacket);
+          clientSocket.send(sendPacket); //SENDS username to the server
           if(player == 1){
             //WAIT until 2nd player connects
             System.out.println("Waiting for second player...");
@@ -95,7 +95,7 @@ class UdpClient {
         case 1: // GAMEPLAY
 
 
-
+          //empties the arrays
           Arrays.fill(sendData, (byte) 0 );
           Arrays.fill(receiveData, (byte) 0 );
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -105,7 +105,8 @@ class UdpClient {
           if(sentence.substring(0,2).toUpperCase().equals("IT")){
             state = 2;
             break;
-          }
+          } //all words have been guessed and instead of receiving next word
+            //proceed to ending for scoring
 
           Arrays.fill(receiveData, (byte) 0 );
           receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -115,9 +116,9 @@ class UdpClient {
           System.out.println(message);
           priority = Integer.parseInt(message);
 
-
+          //the player loops for each word
           switch(priority){
-            case 0:
+            case 0: //you are the player guessing first
               while(true){
                 Arrays.fill(sendData, (byte) 0 );
                 Arrays.fill(receiveData, (byte) 0 );
@@ -140,7 +141,9 @@ class UdpClient {
                 System.out.println(sentence);
                 if(sentence.substring(0,3).toUpperCase().equals("YEY")){
                   break;
-                }
+                } //this means the word has been fully guessed and it is time to move to next
+
+                //waiting for other player to send guess to server
                 if(player == 1){
                   System.out.println("\nWaiting for Player 2 to guess...");
 
@@ -149,20 +152,21 @@ class UdpClient {
                   System.out.println("\nWaiting for Player 1 to guess...");
 
                 }
-
+                //RECEIVE and DISPLAY other player's guess and result
                 receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 clientSocket.receive(receivePacket);
                 sentence = new String(receivePacket.getData());
                 System.out.println(sentence);
                 if(sentence.substring(0,3).toUpperCase().equals("YEY")){
                   break;
-                }
+                } //this means word has been fully guessed and it's time to move to next
               }
 
 
 
             break;
-            case 1: //going next... actions switched
+            case 1: //is the player going "second", so waits for player 1, then makes
+                    //their guess
               while(true){
                 if(player == 1){
                   System.out.println("\nWaiting for Player 2 to guess...");
@@ -207,7 +211,8 @@ class UdpClient {
 
 
         break;
-        case 2:
+        case 2: //all words have been finished and the game is OVER
+
           System.out.println("the end is here");
           /**
           Arrays.fill(receiveData, (byte) 0 );
